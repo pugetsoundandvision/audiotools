@@ -1,1 +1,100 @@
 
+
+#!/bin/bash
+
+usage(){
+    echo
+    echo "usage: -h, -p"
+    echo "(Help Mode and Photo Mode)"
+    echo "This script will create an AIP from an input WAV file"
+    echo "To see this help type audioaip -h"
+    echo ""
+    echo "To create AIP,  type audioaip [dragyourfilehere] and press enter"
+    echo ""
+    echo "To create an AIP using the installed webcam to take pictures of the item's original container"
+    echo "type audioaip -p [dragyourfilehere] and press enter."
+    echo "Hold the item container in front of webcam and follow prompts."
+    echo "From the live preview window press Escape to take picture."
+    echo "There is a slight lag before the image is taken, don't move the item."
+    echo "After viewing your picture, press Escape to continue."
+    echo "If you need to retake a picture, enter r when prompted."
+    echo "This will allow you to retake the previous picture without while preserving filename order."
+    exit
+}
+
+file_input=$1
+
+OPTIND=1
+while getopts "hp:" opt ; do
+    case "${opt}" in
+        h) usage ;;
+        p) runtype="photo" file_input="$2";;
+        *)
+    esac
+done
+
+if [ "${*}" = "" ] ; then
+    usage
+fi
+
+
+
+#create directory structure
+orig_base=$(basename $file_input)
+deriv_name=${file_input%.*}.flac
+mp3_name=${file_input%.*}.mp3
+access_name=$(basename $mp3_name)
+mkdir $(dirname $file_input)/${orig_base%.*}
+mkdir $(dirname $file_input)/${orig_base%.*}/metadata
+mkdir $(dirname $file_input)/${orig_base%.*}/logs
+mkdir $(dirname $file_input)/${orig_base%.*}/logs/fileMeta
+mkdir $(dirname $file_input)/${orig_base%.*}/objects
+mkdir $(dirname $file_input)/${orig_base%.*}/objects/access
+mkdir -p ~/desktop/accessmp3s
+
+if [[ "${runtype}" = "photo" ]] ; then
+#take pictures
+Echo "How many pictures will you take?"
+read pic_num
+i=1
+while [ "$i" -le "$pic_num" ]; do
+
+Echo "Press enter to activate camera, then press escape to take picture"
+read null_response
+ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
+imagesnap - | ffmpeg -i - -pix_fmt rgb24 $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff && ffplay -window_title "Press Escape When Ready To Continue" $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff
+echo "Enter q to quit, r to retake or enter continue"
+read followquery
+
+if [[ "${followquery}" == "q" ]] ; then
+    exit
+fi
+
+if [[ "${followquery}" == "r" ]] ; then
+    rm $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff
+else
+i=$(($i + 1))
+fi
+done
+
+fi
+
+
+
+#create metadata and derivative files
+mediainfo --output=PBCore2 $file_input > $(dirname $file_input)/${orig_base%.*}/logs/fileMeta/${orig_base%.*}_pbcoreinstantiation.xml
+flac --best --keep-foreign-metadata --preserve-modtime --verify $file_input
+ffmpeg -i $file_input -codec:a libmp3lame -qscale:a 2  $mp3_name -codec:a libmp3lame -qscale:a 2 ~/desktop/accessmp3s/$access_name
+
+#create checksum
+md5deep -b $file_input > $(dirname $file_input)/${orig_base%.*}/metadata/${orig_base%.*}.md5
+
+#move files
+mv $file_input $(dirname $file_input)/${orig_base%.*}/objects
+mv $deriv_name $(dirname $file_input)/${orig_base%.*}/objects
+mv $mp3_name $(dirname $file_input)/${orig_base%.*}/objects/access
+
+#Run Bagit
+bagit baginplace $(dirname $file_input)/${orig_base%.*}
+
+
