@@ -1,7 +1,7 @@
 # audiotools
 
 Tools to help with archival audio workflows.
-To install on OSX, use (<a href="http://brew.sh/">Homebrew</a>) and then run the commands:
+To install on OSX, use <a href="http://brew.sh/">Homebrew</a> and then run the commands:
 brew tap pugetsoundandvision/pugetsoundandvision
 brew install audiotools
 
