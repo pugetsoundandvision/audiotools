@@ -2,7 +2,9 @@
 <p>So you digitized some audio and now have a WAV file...now what?  These tools will take that WAV and get it ready for long term archiving and/or ingest into a repository such as Archivematica! By using these two tools together, your WAV file will be transfomed into an archival package conforming to current best practices.</p> 
 <p>To install and use these tools in Mac OSX, use the "Terminal" application located in the "Utilities" folder.
 To install on OSX, use <a href="http://brew.sh/">Homebrew</a> and then run the commands:</p>
-<p><code>brew tap pugetsoundandvision/pugetsoundandvision && brew install audiotools</code></p>
+<p><code>brew tap pugetsoundandvision/pugetsoundandvision && brew install cask</code></p>
+<p><code>brew cask install textmate && brew install audiotools</code></p>
+<p>This will install audiotools as well as Textmate, the text editor they rely on.</p>
 
 Basic Descriptions and Usage:
 
