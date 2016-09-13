@@ -1,5 +1,10 @@
 # audiotools
 
+Tools to help with archival audio workflows.
+To install on OSX, use (<a href="http://brew.sh/">Homebrew</a>) and then run the commands:
+brew tap pugetsoundandvision/pugetsoundandvision
+brew install audiotools
+
 Basic Descriptions and Usage:
 
 UW Metaedit: A command line tool for automatic insertion of metadata into the bext-chunk of broadcast WAV files using the BWF Meta Edit tool (<a href="http://bwfmetaedit.sourceforge.net/Download/Mac_OS/">Download BWF MetaEdit CLI here</a>).
