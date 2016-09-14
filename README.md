@@ -6,12 +6,12 @@ To install on OSX, use <a href="http://brew.sh/">Homebrew</a> and then run the c
 <p><code>brew cask install textmate && brew install audiotools</code></p>
 <p>This will install audiotools as well as Textmate, the text editor they rely on.</p>
 
-Basic Descriptions and Usage:
+##Basic Descriptions and Usage:
 
-<b>UW Metaedit</b>: A command line tool for automatic insertion of broadcast WAV metadata into WAV files using the BWF Meta Edit tool. To use first install BWF MetaEdit (<a href="http://bwfmetaedit.sourceforge.net/Download/Mac_OS/">available here</a>).  Then customize your configuration file (by running uwmetaedit -e) with values to be written in the broadcast WAV file.  Other values such as time of creation will be embedded automatically.
+<strong>UW Metaedit</strong>: A command line tool for automatic insertion of broadcast WAV metadata into WAV files using the BWF Meta Edit tool. To use first install BWF MetaEdit (<a href="http://bwfmetaedit.sourceforge.net/Download/Mac_OS/">available here</a>).  Then customize your configuration file (by running uwmetaedit -e) with values to be written in the broadcast WAV file.  Other values such as time of creation will be embedded automatically.
 Usage: uwmetaedit [inputfile], configuration: uwmetaedit -e, generate external metadata: uwmetaedit -pb [inputfile]
 <p>For metadata examples see <a href="https://github.com/pugetsoundandvision/audiotools/blob/master/bwfmetadataexamples.md">examples</a></p>
 <p>For guidlines on metadata for broadcase WAV files, see the <a href="http://www.digitizationguidelines.gov/audio-visual/documents/Embed_Guideline_20120423.pdf">FADGI guidelines</a> </p>
 
-<b>AudioAIP</b>: For a given WAV file, creates an archival package that adheres to the bagit standard with a mezzanine file, an access file, technical metadata and checksums.  This script includes an option to use a webcam to create pictures of the original item container that will be included in the archival package.  It also supports syncing of package/access copies to a remote or local location for easy backup. Usage: audioaip [inputfile], help: audioaip -h, photo mode: audioaip -p [input file], configuration for file sync: audioaip -e
+<strong>AudioAIP</strong>: For a given WAV file, creates an archival package that adheres to the bagit standard with a mezzanine file, an access file, technical metadata and checksums.  This script includes an option to use a webcam to create pictures of the original item container that will be included in the archival package.  It also supports syncing of package/access copies to a remote or local location for easy backup. Usage: audioaip [inputfile], help: audioaip -h, photo mode: audioaip -p [input file], configuration for file sync: audioaip -e
 
