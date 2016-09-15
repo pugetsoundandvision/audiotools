@@ -1,6 +1,6 @@
 # audiotools
 
-So you digitized some audio have a WAV file...now what?  These tools will take that WAV and get it ready for long term archiving and/or ingest into a repository such as Archivematica! By using these two tools together, your WAV file will be transfomed into an archival package conforming to current best practices.
+So you digitized some audio have and have a WAV file...now what?  These tools will take that WAV and get it ready for long term archiving and/or ingest into a repository such as Archivematica! By using these two tools together, your WAV file will be transfomed into an archival package conforming to current best practices.
 
 To install and use these tools in Mac OSX, use the "Terminal" application located in the "Utilities" folder.
 To use terminal to [install Homebrew](http://brew.sh/) (if you don't have it already)  and then run the commands:
