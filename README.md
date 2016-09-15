@@ -24,5 +24,5 @@ For guidlines on metadata for broadcase WAV files, see the [FADGI guidelines](ht
 
 This script includes an option to use a webcam to create pictures of the original item container that will be included in the archival package.  It also supports syncing of package/access copies to a remote or local location for easy backup.
 
-Usage: audioaip [inputfile], help: audioaip -h, photo mode: audioaip -p [input file], configuration for file sync: audioaip -e
+Usage: `audioaip [inputfile]`, help: `audioaip -h`, photo mode: `audioaip -p [input file]`,configuration for file sync: `audioaip -e`
 
