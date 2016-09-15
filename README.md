@@ -26,3 +26,5 @@ This script includes an option to use a webcam to create pictures of the origina
 
 Usage: `audioaip [inputfile]`, help: `audioaip -h`, photo mode: `audioaip -p [input file]`,configuration for file sync: `audioaip -e`
 
+
+**License:** These tools are released under the [Unlicense](https://github.com/pugetsoundandvision/audiotools/blob/master/UNLICENSE.md).
