@@ -62,7 +62,7 @@ while [ "$i" -le "$pic_num" ]; do
 Echo "Press enter to activate camera, then press escape to take picture"
 read null_response
 ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
-imagesnap - | ffmpeg -i - -pix_fmt rgb24 $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff && ffplay -window_title "Press Escape When Ready To Continue" $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff
+imagesnap - | ffmpeg -i - -compression_algo raw -pix_fmt rgb24 $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff && ffplay -window_title "Press Escape When Ready To Continue" $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff
 echo "Enter q to quit, r to retake or enter continue"
 read followquery
 
