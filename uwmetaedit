@@ -16,7 +16,7 @@ fi
 
 # Option to generate PB Core Instantiation Doc
 
-if [ ${1} = "-pb" ]
+if [ "${1}" = "-pb" ]
 then
 	mediainfo --output=PBCore2 "$2" >"${2%.*}"_pbcoreinstantiationdocument.xml
 	exit
@@ -24,7 +24,7 @@ fi
 
 # Option to Edit Configuration File
 
-if [ ${1} = "-e" ]
+if [ "${1}" = "-e" ]
 then
 	echo "#INSERT YOUR VALUES BETWEEN THE QUOTES AND SAVE FILE" > "${config_file}"
 	echo "originator=\"$originator\"" >> "${config_file}"
