@@ -57,6 +57,7 @@ if [ "$runtype" = "edit" ] ; then
 	echo "history=\"$history\"" >> "${config_file}"
 	echo "IARL=\"$IARL\"" >> "${config_file}"
 	mate $config_file
+	exit 0
 fi
 
 
