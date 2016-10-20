@@ -13,7 +13,9 @@ _Examples:_ `originator="US,WaSeUMC"`, `originator="US,WaU"`
 ###History:
 This field will fill the "Coding History" element of the BWF metadata.  Use it to record information about the creation of the WAV file.  The following is an example of a sample coding history with an annotated version.
 
-`history="A=ANALOGUE,M=stereo,T=Ampex ATR-100; SN1221614; 7.5 ips; open reel tape A=PCM,F=96000,W=24,M=stereo,T=Apogee; Symphony; SNA6M102130900000; A/D"`
+`history="A=ANALOGUE,M=stereo,T=Ampex ATR-100; SN1221614; 7.5 ips; open reel tape
+
+A=PCM,F=96000,W=24,M=stereo,T=Apogee; Symphony; SNA6M102130900000; A/D"`
 ![Coding History](https://github.com/pugetsoundandvision/audiotools/blob/master/CodingHistoryExample.png)
 
 ###IARL
