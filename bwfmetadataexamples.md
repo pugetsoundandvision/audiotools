@@ -1,6 +1,9 @@
 #BWF Metadata Examples
-To configure the uwmetaedit script you will enter in data for three fields. When you first run uwmetaedit -e you will see a screen like this
+To configure the uwmetaedit script you will enter in data for three fields. When you first run uwmetaedit -e you will see a screen like this:
 ![Config Screen](https://github.com/pugetsoundandvision/audiotools/blob/master/ConfigScreenExample.png)
+
+After completing configuration you should end up with something along the lines of this:
+![Config Screen](https://github.com/pugetsoundandvision/audiotools/blob/master/ConfigExample.png)
 
 The following are explanations and examples for the kind of information to include in these three fields. For more detailed information about recommended metadata see the [FADGI guidelines](http://www.digitizationguidelines.gov/audio-visual/documents/Embed_Guideline_20120423.pdf)
 
