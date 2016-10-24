@@ -116,7 +116,7 @@ fi
 #create metadata and derivative files
 mediainfo --output=PBCore2 "$file_input" > "$(dirname "$file_input")/${orig_base%.*}/logs/fileMeta/${orig_base%.*}_pbcoreinstantiation.xml"
 flac --best --keep-foreign-metadata --preserve-modtime --verify "$file_input"
-ffmpeg -i "$file_input" -codec:a libmp3lame -qscale:a 2  "$mp3_name"
+ffmpeg -i "$file_input" -codec:a libmp3lame -dither_method modified_e_weighted -qscale:a 2  "$mp3_name"
 
 #sync access mp3 if selected
 if [[ "${derivative_choice}" = "Y" ]] ; then
