@@ -24,7 +24,20 @@ For guidlines on metadata for broadcase WAV files, see the [FADGI guidelines](ht
 
 This script includes an option to use a webcam to create pictures of the original item container that will be included in the archival package.  It also supports syncing of package/access copies to a remote or local location for easy backup.
 
-Usage: `audioaip [inputfile]`, help: `audioaip -h`, photo mode: `audioaip -p [input file]`,configuration for file sync: `audioaip -e`
+Usage: `audioaip [inputfile]`, help: `audioaip -h`, photo mode: `audioaip -p [input file]`, set up configuration for options `audioaip -e`
+
+**AudioAIP Configuration:**
+
+When you run `audioaip -e` you will see a configuration screen like this:
+![AudioAIP Config](https://github.com/pugetsoundandvision/audiotools/blob/master/audioaipconfig.png)
+
+To set your options, simply type them between the respective quotation marks, save the file and quit.
+
+The options require file paths.  An easy way to find the file path for a file or folder is just to drag it into the terminal window and then copy the results. It should looks something like `/Users/username/Desktop/myfolder`
+
+* The first option is to enable synchronizing your preservation package to a second location.  Enable this by entering "Y" and a path (or ssh path) for a destination.  Something like: `sync_choice="Y"` and `destination="path to your folder here"`
+* The second option allows you to set a location to make an extra copy of your access files (in addition to the ones contained in your package).  This enables you to have copies of all access files added to one central folder for more easy management. Enable this by entering "Y" and a path (or ssh path) for a destination.  Something like: `derivative_choice="Y"` and `destination="path to your folder here"`
+* The third option allows you to create a second access copy and attach an extra piece of audio (such as a copyright statement).  Enable this by entering the path for the audio file you would like to append to the access copy.  Something like `copyright_location="path to your audio file here"`
 
 
 **License:** These tools are released under the [Unlicense](https://github.com/pugetsoundandvision/audiotools/blob/master/UNLICENSE.md).
