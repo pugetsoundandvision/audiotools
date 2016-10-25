@@ -20,6 +20,8 @@ Usage: `uwmetaedit [inputfile]`, Configuration: `uwmetaedit -e`, Generate extern
 
 For guidlines on metadata for broadcase WAV files, see the [FADGI guidelines](http://www.digitizationguidelines.gov/audio-visual/documents/Embed_Guideline_20120423.pdf)
 
+---
+
 **AudioAIP**: For a given WAV file, creates an archival package that adheres to the bagit standard with a mezzanine file, an access file, technical metadata and checksums.  Once installed, for instructions just type `audioaip` to see usage information.
 
 This script includes an option to use a webcam to create pictures of the original item container that will be included in the archival package.  It also supports syncing of package/access copies to a remote or local location for easy backup.
