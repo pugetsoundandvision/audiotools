@@ -29,7 +29,7 @@ Usage: `audioaip [inputfile]`, help: `audioaip -h`, photo mode: `audioaip -p [in
 **AudioAIP Configuration:**
 
 When you run `audioaip -e` you will see a configuration screen like this:
-![AudioAIP Config](https://github.com/pugetsoundandvision/audiotools/blob/master/audioaipconfig.png)
+![AudioAIP Config](https://github.com/pugetsoundandvision/audiotools/blob/master/supplemental/audioaipconfig.png)
 
 To set your options, simply type them between the respective quotation marks, save the file and quit.
 
@@ -40,4 +40,4 @@ The options require file paths.  An easy way to find the file path for a file or
 * The third option allows you to create a second access copy and attach an extra piece of audio (such as a copyright statement).  Enable this by entering the path for the audio file you would like to append to the access copy.  Something like `copyright_location="path to your audio file here"`
 
 
-**License:** These tools are released under the [Unlicense](https://github.com/pugetsoundandvision/audiotools/blob/master/UNLICENSE.md).
+**License:** These tools are released under the [Unlicense](https://github.com/pugetsoundandvision/audiotools/blob/master/supplemental/UNLICENSE.md).
