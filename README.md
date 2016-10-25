@@ -16,7 +16,7 @@ This will install audiotools as well as Textmate, the text editor they rely on.
 **UW Metaedit**: A command line tool for automatic insertion of broadcast WAV metadata into WAV files using the BWF Meta Edit tool. To use, first install the BWF MetaEdit CLI ([available here](http://bwfmetaedit.sourceforge.net/Download/Mac_OS/)).  Then customize your configuration file (by running uwmetaedit -e) with values to be written in the broadcast WAV file.  Other values such as time of creation will be embedded automatically.
 Usage: `uwmetaedit [inputfile]`, Configuration: `uwmetaedit -e`, Generate external metadata: `uwmetaedit -p [inputfile]`, Help: `uwmetaedit -h`, Enable Overwrite (not recommended): `uwmetaedit -o [inputfile]`.
 
-For metadata examples see [the examples section](https://github.com/pugetsoundandvision/audiotools/blob/master/bwfmetadataexamples.md)
+For metadata examples see [the examples section](https://github.com/pugetsoundandvision/audiotools/blob/master/supplemental/bwfmetadataexamples.md)
 
 For guidlines on metadata for broadcase WAV files, see the [FADGI guidelines](http://www.digitizationguidelines.gov/audio-visual/documents/Embed_Guideline_20120423.pdf)
 
