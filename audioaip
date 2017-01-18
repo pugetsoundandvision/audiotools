@@ -143,11 +143,11 @@ fi
 md5deep -b "$file_input" > "$(dirname "$file_input")/${orig_base%.*}/metadata/${orig_base%.*}.md5"
 
 #move files
-mv "$file_input" "$(dirname "$file_input")/${orig_base%.*}/objects"
-mv "$deriv_name" "$(dirname "$file_input")/${orig_base%.*}/objects"
-mv "$mp3_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
+rsync --remove-source-files "$file_input" "$(dirname "$file_input")/${orig_base%.*}/objects"
+rsync --remove-source-files "$deriv_name" "$(dirname "$file_input")/${orig_base%.*}/objects"
+rsync --remove-source-files "$mp3_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
 if [ -f "$appended_name" ] ; then
-    mv "$appended_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
+    rsync --remove-source-files "$appended_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
 fi
 
 package="$(dirname "$file_input")/${orig_base%.*}"
