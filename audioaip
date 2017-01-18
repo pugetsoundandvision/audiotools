@@ -26,26 +26,25 @@ usage(){
     exit
 }
 
+
 _error_exit(){
     echo -e "\033[1;32m"$1"\033[0m" 1>&2
     exit 1
 }
-
-file_input=$1
+if [ "${*}" = "" ] ; then
+    usage
+fi
 
 OPTIND=1
 while getopts "hep:" opt ; do
     case "${opt}" in
         h) usage ;;
-        p) runtype="photo" file_input="$2";;
+        p) runtype="photo" && file_input="${OPTARG}";;
         e) runtype="edit";;
-        *)
+        *) usage
     esac
 done
-
-if [ "${*}" = "" ] ; then
-    usage
-fi
+shift "$(( ${OPTIND} - 1 ))"
 
 if [[ "${runtype}" = "edit" ]] ; then
     {
@@ -66,107 +65,107 @@ if [[ "${runtype}" = "edit" ]] ; then
     exit
 fi
 
-#Check if input exists
+while [ "${*}" != "" ] ; do
+        file_input="${1}"
+    shift
+    #Check if input exists
 
-if [ ! -f "$file_input" ]; then
-    _error_exit "Input could not be found. Please enter valid input."
-fi
+    if [ ! -f "$file_input" ]; then
+        _error_exit "Input could not be found. Please enter valid input."
+    fi
 
-WAV_TEST=$(file "$file_input" | grep "WAVE")
+    WAV_TEST=$(file "$file_input" | grep "WAVE")
 
-if [ -z "$WAV_TEST" ] ; then
-    _error_exit "Input is not a WAV file. Please enter valid input."
-fi
+    if [ -z "$WAV_TEST" ] ; then
+        _error_exit "Input is not a WAV file. Please enter valid input."
+    fi
 
-#create directory structure
-orig_base=$(basename "$file_input")
-deriv_name="${file_input%.*}.flac"
-mp3_name="${file_input%.*}.mp3"
-appended_name="${file_input%.*}_appended.mp3"
-mkdir "$(dirname "$file_input")/${orig_base%.*}" || _error_exit "Directory already exists. Exiting..."
-mkdir "$(dirname "$file_input")/${orig_base%.*}/metadata"
-mkdir "$(dirname "$file_input")/${orig_base%.*}/logs"
-mkdir "$(dirname "$file_input")/${orig_base%.*}/logs/fileMeta"
-mkdir "$(dirname "$file_input")/${orig_base%.*}/objects"
-mkdir "$(dirname "$file_input")/${orig_base%.*}/objects/access"
+    #create directory structure
+    orig_base=$(basename "$file_input")
+    deriv_name="${file_input%.*}.flac"
+    mp3_name="${file_input%.*}.mp3"
+    appended_name="${file_input%.*}_appended.mp3"
+    mkdir "$(dirname "$file_input")/${orig_base%.*}" || _error_exit "Directory already exists. Exiting..."
+    mkdir "$(dirname "$file_input")/${orig_base%.*}/metadata"
+    mkdir "$(dirname "$file_input")/${orig_base%.*}/logs"
+    mkdir "$(dirname "$file_input")/${orig_base%.*}/logs/fileMeta"
+    mkdir "$(dirname "$file_input")/${orig_base%.*}/objects"
+    mkdir "$(dirname "$file_input")/${orig_base%.*}/objects/access"
 
-if [[ "${runtype}" = "photo" ]] ; then
-#take pictures
-Echo "How many pictures will you take?"
-read pic_num
-i=1
-while [ "$i" -le "$pic_num" ]; do
+    if [[ "${runtype}" = "photo" ]] ; then
+        #take pictures
+        Echo "How many pictures will you take?"
+        read pic_num
+        i=1
+        while [ "$i" -le "$pic_num" ]; do
+            Echo "Press enter to activate camera, then press escape to take picture"
+            read null_response
+            ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
+            imagesnap - | ffmpeg -i - -compression_algo raw -pix_fmt rgb24 "$(dirname "$file_input")/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff" && ffplay -window_title "Press Escape When Ready To Continue" "$(dirname "$file_input")/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff"
+            echo "Enter q to quit, r to retake or enter continue"
+            read followquery
 
-Echo "Press enter to activate camera, then press escape to take picture"
-read null_response
-ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
-imagesnap - | ffmpeg -i - -compression_algo raw -pix_fmt rgb24 "$(dirname "$file_input")/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff" && ffplay -window_title "Press Escape When Ready To Continue" "$(dirname "$file_input")/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff"
-echo "Enter q to quit, r to retake or enter continue"
-read followquery
+            if [[ "${followquery}" == "q" ]] ; then
+                exit
+            fi
 
-if [[ "${followquery}" == "q" ]] ; then
-    exit
-fi
+            if [[ "${followquery}" == "r" ]] ; then
+                rm $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff
+            else
+                i=$(($i + 1))
+            fi
+        done
 
-if [[ "${followquery}" == "r" ]] ; then
-    rm $(dirname $file_input)/${orig_base%.*}/objects/${orig_base%.*}_0"$i".tiff
-else
-i=$(($i + 1))
-fi
-done
+    fi
 
-fi
-
-
-
-#create metadata and derivative files
-mediainfo --output=PBCore2 "$file_input" > "$(dirname "$file_input")/${orig_base%.*}/logs/fileMeta/${orig_base%.*}_pbcoreinstantiation.xml"
-flac --best --keep-foreign-metadata --preserve-modtime --verify "$file_input"
-#mp3 options
-if [  -n "$copyright_location" ] ; then
-    ffmpeg -i "$file_input" -i "$copyright_location" -filter_complex "[0:a:0]asplit=2[a][b];[a]dynaudnorm[aa];[b]afifo[bb];[1:a:0][bb]concat=n=2:v=0:a=1[c];[c]dynaudnorm=g=81[concatout]" -map "[aa]" -codec:a libmp3lame -dither_method modified_e_weighted -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "$mp3_name" -map "[concatout]" -codec:a libmp3lame -dither_method modified_e_weighted -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "$appended_name"
-else
+    #create metadata and derivative files
+    mediainfo --output=PBCore2 "$file_input" > "$(dirname "$file_input")/${orig_base%.*}/logs/fileMeta/${orig_base%.*}_pbcoreinstantiation.xml"
+    flac --best --keep-foreign-metadata --preserve-modtime --verify "$file_input"
+    #mp3 options
+    if [  -n "$copyright_location" ] ; then
+        ffmpeg -i "$file_input" -i "$copyright_location" -filter_complex "[0:a:0]asplit=2[a][b];[a]dynaudnorm[aa];[b]afifo[bb];[1:a:0][bb]concat=n=2:v=0:a=1[c];[c]dynaudnorm=g=81[concatout]" -map "[aa]" -codec:a libmp3lame -dither_method modified_e_weighted -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "$mp3_name" -map "[concatout]" -codec:a libmp3lame -dither_method modified_e_weighted -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "$appended_name"
+    else
     ffmpeg -i "$file_input" -codec:a libmp3lame -write_id3v1 1 -id3v2_version 3 -dither_method modified_e_weighted -af dynaudnorm=g=81 -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "$mp3_name"
-fi
+    fi
 
 
-#sync access mp3s if option selected
-if [[ "${derivative_choice}" = "Y" ]] ; then
-    echo -e "\033[1;32mSyncing access copy to $destination \033[0m"
-    rsync -Pa "$mp3_name" "$derivative_destination"
+    #sync access mp3s if option selected
+    if [[ "${derivative_choice}" = "Y" ]] ; then
+        echo -e "\033[1;32mSyncing access copy to $destination \033[0m"
+        rsync -Pa "$mp3_name" "$derivative_destination"
         if [ -f "$appended_name" ] ; then
             rsync -Pa "$appended_name" "$derivative_destination"
         fi
-fi
-
-#create checksum
-md5deep -b "$file_input" > "$(dirname "$file_input")/${orig_base%.*}/metadata/${orig_base%.*}.md5"
-
-#move files
-rsync --remove-source-files "$file_input" "$(dirname "$file_input")/${orig_base%.*}/objects"
-rsync --remove-source-files "$deriv_name" "$(dirname "$file_input")/${orig_base%.*}/objects"
-rsync --remove-source-files "$mp3_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
-if [ -f "$appended_name" ] ; then
-    rsync --remove-source-files "$appended_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
-fi
-
-package="$(dirname "$file_input")/${orig_base%.*}"
-
-#Run Bagit
-bagit baginplace "$package"
-
-#sync AIP to destination
-if [[ "${sync_choice}" = "Y" ]] ; then
-    echo -e "\033[1;32mSyncing Files to  "$destination" \033[0m"
-    rsync -Pa "$package" "$destination"
-
-# check if destination is local. If local verify with bagit. 
-    remote_test=$(echo "$destination" | grep "@")
-    if [ -n "$remote_test" ] ; then
-        echo -e "\033[1;32mAs Destination is not local audioaip is skipping bagit verification\033[0m"
-        exit
     fi
+
+    #create checksum
+    md5deep -b "$file_input" > "$(dirname "$file_input")/${orig_base%.*}/metadata/${orig_base%.*}.md5"
+
+    #move files
+    rsync "$file_input" "$(dirname "$file_input")/${orig_base%.*}/objects"
+    rsync --remove-source-files "$deriv_name" "$(dirname "$file_input")/${orig_base%.*}/objects"
+    rsync --remove-source-files "$mp3_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
+    if [ -f "$appended_name" ] ; then
+        rsync --remove-source-files "$appended_name" "$(dirname "$file_input")/${orig_base%.*}/objects/access"
+    fi
+
+    package="$(dirname "$file_input")/${orig_base%.*}"
+
+    #Run Bagit
+    bagit baginplace "$package"
+
+    #sync AIP to destination
+    if [[ "${sync_choice}" = "Y" ]] ; then
+        echo -e "\033[1;32mSyncing Files to  "$destination" \033[0m"
+        rsync -Pa "$package" "$destination"
+        # check if destination is local. If local verify with bagit. 
+        remote_test=$(echo "$destination" | grep "@")
+        if [ -n "$remote_test" ] ; then
+            echo -e "\033[1;32mAs Destination is not local audioaip is skipping bagit verification\033[0m"
+            exit
+        fi
     
-    echo -e "\033[1;32mVerifying checksums of package \033[0m"
-    bagit verifypayloadmanifests --excludehiddenfiles "$destination"/"${orig_base%.*}"
-fi
+        echo -e "\033[1;32mVerifying checksums of package \033[0m"
+        bagit verifypayloadmanifests --excludehiddenfiles "$destination"/"${orig_base%.*}"
+    fi
+done
