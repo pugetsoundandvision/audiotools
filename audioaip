@@ -36,10 +36,10 @@ if [ "${*}" = "" ] ; then
 fi
 
 OPTIND=1
-while getopts "hep:" opt ; do
+while getopts "hep" opt ; do
     case "${opt}" in
         h) usage ;;
-        p) runtype="photo" && file_input="${OPTARG}";;
+        p) runtype="photo";;
         e) runtype="edit";;
         *) usage
     esac
