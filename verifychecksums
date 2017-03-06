@@ -13,6 +13,8 @@ if [ -n "${HASHCOUNT}" ] ; then
         echo "The following files either had a fixity mismatch or had no fixity information. A list has been created on the desktop."
         echo "${MISMATCHES}"
         echo "${MISMATCHES}" > ~/Desktop/$(basename "${INPUTDIR}")_FixityCheck.txt
+    else
+        echo "No fixity mismatches were detected"
     fi
 else 
     echo "No MD5 files were found" && exit 1
