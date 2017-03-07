@@ -1,8 +1,8 @@
 #!/bin/bash
 
 config_file="$HOME/.$(basename "${0}").conf"
-touch $config_file
-source $config_file
+touch "${config_file}"
+source "${config_file}"
 
 _usage(){
     echo
@@ -28,7 +28,7 @@ _usage(){
 
 
 _error_exit(){
-    echo -e "\033[1;32m"$1"\033[0m" 1>&2
+    echo -e "\033[1;32m$1\033[0m" 1>&2
     exit 1
 }
 if [ "${*}" = "" ] ; then
@@ -56,13 +56,13 @@ if [[ "${runtype}" = "edit" ]] ; then
     echo "destination=("${destination[@]}")"
     echo ""
     echo "#If you want to sync an additional access file to an extra location choose Y or N and enter file path of destination below"
-    echo "derivative_choice=\"$derivative_choice\""
-    echo "derivative_destination=\"$derivative_destination\""
+    echo "derivative_choice=\"${derivative_choice}\""
+    echo "derivative_destination=\"${derivative_destination}\""
     echo ""
     echo "#If you would like to append an mp3, such as a copright notice, to access copies, enter the file path for the notice here"
-    echo "copyright_location=\"$copyright_location\""
+    echo "copyright_location=\"${copyright_location}\""
     } > "${config_file}"
-    mate "$config_file"
+    mate "${config_file}"
     exit
 fi
 
@@ -107,7 +107,7 @@ while [ "${*}" != "" ] ; do
             Echo "Press enter to activate camera, then press escape to take picture"
             read null_response
             ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
-            imagesnap - | ffmpeg -i - -compression_algo raw -pix_fmt rgb24 "${targetdirectory}/${mediaid}/objects/${mediaid}_0"$i".tiff" && ffplay -window_title "Press Escape When Ready To Continue" "${targetdirectory}/${mediaid}/objects/${mediaid}_0"${i}".tiff"
+            imagesnap - | ffmpeg -i - -compression_algo raw -pix_fmt rgb24 "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"$i".tiff && ffplay -window_title "Press Escape When Ready To Continue" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"${i}".tiff
             echo "Enter q to quit, r to retake or enter continue"
             read followquery
 
@@ -116,7 +116,7 @@ while [ "${*}" != "" ] ; do
             fi
 
             if [[ "${followquery}" == "r" ]] ; then
-                rm $(dirname ${file_input})/${mediaid}/objects/${mediaid}_0"${i}".tiff
+                rm "$(dirname "${file_input}")"/"${mediaid}"/objects/"${mediaid}"_0"${i}".tiff
             else
                 i=$(($i + 1))
             fi
