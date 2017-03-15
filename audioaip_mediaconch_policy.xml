@@ -1,16 +1,23 @@
 <?xml version="1.0"?>
-<policy type="and" name="waseumc_barton15007_vandals.wav">
-  <rule name="General/AudioCount is 1" value="AudioCount" tracktype="General" occurrence="*" operator="=">1</rule>
-  <rule name="General/FileExtension is wav" value="FileExtension" tracktype="General" occurrence="*" operator="=">wav</rule>
-  <rule name="General/Format is Wave" value="Format" tracktype="General" occurrence="*" operator="=">Wave</rule>
-  <rule name="General/OverallBitRate_Mode is CBR" value="OverallBitRate_Mode" tracktype="General" occurrence="*" operator="=">CBR</rule>
-  <rule name="Audio/Format is PCM" value="Format" tracktype="Audio" occurrence="*" operator="=">PCM</rule>
-  <rule name="Audio/Format_Settings_Endianness is Little" value="Format_Settings_Endianness" tracktype="Audio" occurrence="*" operator="=">Little</rule>
-  <rule name="Audio/Format_Settings_Sign is Signed" value="Format_Settings_Sign" tracktype="Audio" occurrence="*" operator="=">Signed</rule>
-  <rule name="Audio/CodecID is 1" value="CodecID" tracktype="Audio" occurrence="*" operator="=">1</rule>
-  <rule name="Audio/BitRate_Mode is CBR" value="BitRate_Mode" tracktype="Audio" occurrence="*" operator="=">CBR</rule>
-  <rule name="Audio/SamplingRate is 96000" value="SamplingRate" tracktype="Audio" occurrence="*" operator="=">96000</rule>
-  <rule name="Audio/BitDepth is 24" value="BitDepth" tracktype="Audio" occurrence="*" operator="=">24</rule>
-  <rule name="Audio/Delay_Source is Container (bext)" value="Delay_Source" tracktype="Audio" occurrence="*" operator="=">Container (bext)</rule>
+<!--This policy was adapted from the Audio normal WAV policy in the mediaconch public policy list. Some rules have been commented out -->
+<!--Uncomment them to add them to the policy for checking-->
+<policy type="and" name="audioaip policy" license="CC-BY-4.0+">
+  <description>This is the default policy for audioaip. By default it checks for regular BWF files at 96kHz/24 bit</description>
+  <policy type="or" name="Signed Integer or Float?">
+    <rule name="Is signed Integer?" value="Format_Settings_Sign" tracktype="Audio" occurrence="*" operator="=">Signed</rule>
+    <rule name="Is floating point?" value="Format_Profile" tracktype="Audio" occurrence="*" operator="=">Float</rule>
+  </policy>
+    <policy type="and" name="Correct sample rate?">
+      <description>This was not implemented as rule in order to avoid irregular sampling rates.</description>
+      <!--><rule name="Audio is 44.1 kHz?" value="SamplingRate" tracktype="Audio" occurrence="*" operator="=">44100</rule>
+      <rule name="Audio is 48 kHz?" value="SamplingRate" tracktype="Audio" occurrence="*" operator="=">48000</rule> -->
+      <rule name="Is audio 96kHz?" value="SamplingRate" tracktype="Audio" occurrence="*" operator="=">96000</rule>
+    </policy>
+    <policy type="and" name="Correct bit depth?">
+      <rule name="Is audio 24 bit?" value="BitDepth" tracktype="Audio" occurrence="*" operator="=">24</rule>
+    </policy>
+  <rule name="Container is RIFF (WAV)?" value="Format" tracktype="General" occurrence="*" operator="=">Wave</rule>
+  <rule name="Encoding is linear PCM?" value="Format" tracktype="Audio" occurrence="*" operator="=">PCM</rule>
+  <rule name="Audio is 'Little Endian'?" value="Format_Settings_Endianness" tracktype="Audio" occurrence="*" operator="=">Little</rule>
+  <rule name="Is there BWF metadata embedded?" value="/Wave/Broadcast extension/Header/Name" occurrence="*" operator="=">bext</rule>
 </policy>
-

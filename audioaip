@@ -3,7 +3,6 @@
 config_file="$HOME/.$(basename "${0}").conf"
 touch "${config_file}"
 source "${config_file}"
-mediaconchsource=/usr/local/etc/audioaip_mediaconch_policy.xml
 
 _usage(){
     echo
@@ -62,6 +61,10 @@ if [[ "${runtype}" = "edit" ]] ; then
     echo ""
     echo "#If you would like to append an mp3, such as a copright notice, to access copies, enter the file path for the notice here"
     echo "copyright_location=\"${copyright_location}\""
+    echo ""
+    echo "#By default mediaconch verification is on. By default it will check for a 96kHz/24 bit BWF file."
+    echo "#To turn off type a # in front of the following line.  To change policy, replace path to default policy."
+    echo "mediaconchsource=/usr/local/etc/audioaip_mediaconch_policy.xml"
     } > "${config_file}"
     mate "${config_file}"
     exit
@@ -71,6 +74,8 @@ while [ "${*}" != "" ] ; do
     file_input="${1}"
     shift
 
+    #Check if input exists
+    
     if [ ! -f "${file_input}" ]; then
         _error_exit "Input could not be found. Please enter valid input."
     fi
@@ -81,10 +86,21 @@ while [ "${*}" != "" ] ; do
         _error_exit "Input is not a WAV file. Please enter valid input."
     fi
     
-    #Check if input is valid
-    mediaconch --policy="${mediaconchsource}" "${file_input}"
-    #Check if input exists
-
+    #Check if input is valid (mediaconch)
+    if [ -n "${mediaconchsource}" ] ; then
+        mediaconchresult=$(mediaconch --policy="${mediaconchsource}" "${file_input}")
+        mediaconchresult_trim=$(echo "${mediaconchresult}" | cut -d' ' -f1 | tr -d '\n')
+        if [ "${mediaconchresult_trim}" = "fail!" ] ; then
+            echo -e "\033[1;31mWarning: Input does not conform to the audioaip policies for the following reasons:\033[0m"
+            echo "${mediaconchresult}"
+            echo -e "\033[1;32mEnter Y to proceed.  Any other key to exit.\033[0m"
+            read exit_check
+            if ! [[ "${exit_check}" = [Yy] ]] ; then
+                _error_exit "Exiting"
+            fi 
+        fi
+    fi
+    
     #create directory structure
     
     orig_base=$(basename "${file_input}")
