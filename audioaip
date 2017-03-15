@@ -3,6 +3,7 @@
 config_file="$HOME/.$(basename "${0}").conf"
 touch "${config_file}"
 source "${config_file}"
+mediaconchsource=/usr/local/etc/audioaip_mediaconch_policy.xml
 
 _usage(){
     echo
@@ -69,8 +70,6 @@ fi
 while [ "${*}" != "" ] ; do
     file_input="${1}"
     shift
-    
-    #Check if input exists
 
     if [ ! -f "${file_input}" ]; then
         _error_exit "Input could not be found. Please enter valid input."
@@ -81,6 +80,10 @@ while [ "${*}" != "" ] ; do
     if [ -z "$WAV_TEST" ] ; then
         _error_exit "Input is not a WAV file. Please enter valid input."
     fi
+    
+    #Check if input is valid
+    mediaconch --policy="${mediaconchsource}" "${file_input}"
+    #Check if input exists
 
     #create directory structure
     

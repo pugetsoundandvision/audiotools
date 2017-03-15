@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<policy type="and" name="waseumc_barton15007_vandals.wav">
+  <rule name="General/AudioCount is 1" value="AudioCount" tracktype="General" occurrence="*" operator="=">1</rule>
+  <rule name="General/FileExtension is wav" value="FileExtension" tracktype="General" occurrence="*" operator="=">wav</rule>
+  <rule name="General/Format is Wave" value="Format" tracktype="General" occurrence="*" operator="=">Wave</rule>
+  <rule name="General/OverallBitRate_Mode is CBR" value="OverallBitRate_Mode" tracktype="General" occurrence="*" operator="=">CBR</rule>
+  <rule name="Audio/Format is PCM" value="Format" tracktype="Audio" occurrence="*" operator="=">PCM</rule>
+  <rule name="Audio/Format_Settings_Endianness is Little" value="Format_Settings_Endianness" tracktype="Audio" occurrence="*" operator="=">Little</rule>
+  <rule name="Audio/Format_Settings_Sign is Signed" value="Format_Settings_Sign" tracktype="Audio" occurrence="*" operator="=">Signed</rule>
+  <rule name="Audio/CodecID is 1" value="CodecID" tracktype="Audio" occurrence="*" operator="=">1</rule>
+  <rule name="Audio/BitRate_Mode is CBR" value="BitRate_Mode" tracktype="Audio" occurrence="*" operator="=">CBR</rule>
+  <rule name="Audio/SamplingRate is 96000" value="SamplingRate" tracktype="Audio" occurrence="*" operator="=">96000</rule>
+  <rule name="Audio/BitDepth is 24" value="BitDepth" tracktype="Audio" occurrence="*" operator="=">24</rule>
+  <rule name="Audio/Delay_Source is Container (bext)" value="Delay_Source" tracktype="Audio" occurrence="*" operator="=">Container (bext)</rule>
+</policy>
+
