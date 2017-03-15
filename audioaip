@@ -91,7 +91,13 @@ while [ "${*}" != "" ] ; do
         mediaconchresult=$(mediaconch --policy="${mediaconchsource}" "${file_input}")
         mediaconchresult_trim=$(echo "${mediaconchresult}" | cut -d' ' -f1 | tr -d '\n')
         if [ "${mediaconchresult_trim}" = "fail!" ] ; then
-            echo "${mediaconchresult}" && exit 1
+            echo -e "\033[1;31mWarning: Input does not conform to the audioaip policies for the following reasons:\033[0m"
+            echo "${mediaconchresult}"
+            echo -e "\033[1;32mEnter Y to proceed.  Any other key to exit.\033[0m"
+            read exit_check
+            if ! [[ "${exit_check}" = [Yy] ]] ; then
+                _error_exit "Exiting"
+            fi 
         fi
     fi
     
