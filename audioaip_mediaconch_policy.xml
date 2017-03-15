@@ -3,6 +3,7 @@
 <!--Uncomment them to add them to the policy for checking-->
 <policy type="and" name="audioaip policy" license="CC-BY-4.0+">
   <description>This is the default policy for audioaip. By default it checks for regular BWF files at 96kHz/24 bit</description>
+  <rule name="Is there BWF metadata embedded?" value="Wave/Broadcast extension" occurrence="*" operator="exists" scope="mmt"/>
   <policy type="or" name="Signed Integer or Float?">
     <rule name="Is signed Integer?" value="Format_Settings_Sign" tracktype="Audio" occurrence="*" operator="=">Signed</rule>
     <rule name="Is floating point?" value="Format_Profile" tracktype="Audio" occurrence="*" operator="=">Float</rule>
@@ -19,5 +20,4 @@
   <rule name="Container is RIFF (WAV)?" value="Format" tracktype="General" occurrence="*" operator="=">Wave</rule>
   <rule name="Encoding is linear PCM?" value="Format" tracktype="Audio" occurrence="*" operator="=">PCM</rule>
   <rule name="Audio is 'Little Endian'?" value="Format_Settings_Endianness" tracktype="Audio" occurrence="*" operator="=">Little</rule>
-  <rule name="Audio/Delay_Source is Container (bext)" value="Delay_Source" tracktype="Audio" occurrence="*" operator="=">Container (bext)</rule>
 </policy>
