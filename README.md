@@ -45,8 +45,15 @@ The options require file paths.  An easy way to find the file path for a file or
 * The second option allows you to set a location to make an extra copy of your access files (in addition to the ones contained in your package).  This enables you to have copies of all access files added to one central folder for more easy management. Enable this by entering "Y" and a path (or ssh path) for a destination.  Something like: `derivative_choice="Y"` and `destination="path to your folder here"`
 * The third option allows you to create a second access copy and attach an extra piece of audio (such as a copyright statement).  Enable this by entering the path for the audio file you would like to append to the access copy.  Something like `copyright_location="path to your audio file here"`
 
-## License
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />The audiotools scripts and all associated documentation are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a> unless otherwise noted.
+## Licenses
+
+Scripts
+
+audiotools scripts are licensed under a [BSD 3-Clause License](https://github.com/pugetsoundandvision/audiotools/blob/master/LICENSE)
+
+Documentation
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />All associated documentation for the audiotools scripts are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a> unless otherwise noted.
 
 BWF Metaedit
 
