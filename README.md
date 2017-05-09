@@ -15,7 +15,7 @@ Textmate: `brew cask install textmate`
 
 BWF MetaEdit CLI: ([Download here](http://bwfmetaedit.sourceforge.net/Download/Mac_OS/))
 
-##Basic Descriptions and Usage:
+## Basic Descriptions and Usage:
 
 **UW Metaedit**: A command line tool for automatic insertion of broadcast WAV metadata into WAV files using the BWF Meta Edit tool. To use, first customize your configuration file (by running uwmetaedit -e) with values to be written in the broadcast WAV file.  Other values such as time of creation will be embedded automatically.
 Usage: `uwmetaedit [inputfile]`, Configuration: `uwmetaedit -e`, Generate external metadata: `uwmetaedit -p [inputfile]`, Help: `uwmetaedit -h`, Enable Overwrite (not recommended): `uwmetaedit -o [inputfile]`.
