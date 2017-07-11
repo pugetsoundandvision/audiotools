@@ -19,5 +19,5 @@
   <rule name="Container is RIFF (WAV)?" value="Format" tracktype="General" occurrence="*" operator="=">Wave</rule>
   <rule name="Encoding is linear PCM?" value="Format" tracktype="Audio" occurrence="*" operator="=">PCM</rule>
   <rule name="Audio is 'Little Endian'?" value="Format_Settings_Endianness" tracktype="Audio" occurrence="*" operator="=">Little</rule>
-  <rule name="Is there BWF metadata embedded?" value="Wave/Broadcast extension" occurrence="*" operator="exists" scope="mmt"/>
+  <rule name="Is there BWF metadata embedded?" value="Wave/Broadcast extension/" occurrence="*" operator="exists" scope="mmt"/>
 </policy>
