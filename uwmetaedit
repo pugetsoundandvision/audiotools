@@ -58,7 +58,7 @@ if [ "$runtype" = "edit" ] ; then
 	echo "history=\"${history}\""
 	echo "IARL=\"${IARL}\""
     } > "${config_file}"
-	mate "${config_file}"
+	mate "${config_file}" || nano "${config_file}"
 	exit 0
 fi
 
