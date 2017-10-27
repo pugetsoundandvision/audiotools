@@ -1,5 +1,5 @@
 #!/bin/bash
-#must have bwfmetaedit and textmate installed to work
+#must have bwfmetaed installed to work. Relies on either textmate or nano to edit config.
 config_file="$HOME/.$(basename "${0}").conf"
 touch "${config_file}"
 source "${config_file}"
@@ -32,6 +32,10 @@ _error_exit(){
 }
 
 # Set up variables
+if [[ "$(uname -s)" = "Darwin" ]] ; then
+    system='macOS'
+fi
+
 orig_short="${file_input##*/}"
 orig_ref="${orig_short%.*}"
 
@@ -64,9 +68,14 @@ fi
 
 
 # Run bwfmetaedit with selected settings on input file
-date=$(getfileinfo "${file_input}" | grep "created" | cut -d ' ' -f2)
-date_normalized=$(date -jf "%m/%d/%Y" "${date}" +%Y-%m-%d)
-time=$(getfileinfo "${file_input}" | grep "created" | cut -d ' ' -f3)
+if [[ ${system} = "macOS" ]] ; then
+    date=$(getfileinfo "${file_input}" | grep "created" | cut -d ' ' -f2)
+    date_normalized=$(date -jf "%m/%d/%Y" "${date}" +%Y-%m-%d)
+    time=$(getfileinfo "${file_input}" | grep "created" | cut -d ' ' -f3)
+else
+    date_normalized=$(stat "${file_input}" | grep 'Modify' | cut -d' ' -f2)
+    time=$(stat "${file_input}" | grep 'Modify' | cut -d' ' -f3 | cut -d'.' -f1)
+fi
 
 if [ "${runtype}" = "overwrite" ] ; then
     bwfmetaedit --Description="${file_input##*/}" --Originator="${originator}" --OriginatorReference="${orig_ref}" --History="${history}" --IARL="${IARL}" --MD5-Embed --OriginationDate="${date_normalized}" \
