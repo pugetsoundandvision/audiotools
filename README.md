@@ -22,7 +22,7 @@ Usage: `uwmetaedit [inputfile]`, Configuration: `uwmetaedit -e`, Generate extern
 
 **For configuration instructions and metadata examples see [the examples section](https://github.com/pugetsoundandvision/audiotools/blob/master/supplemental/bwfmetadataexamples.md).**
 
-For guidlines on metadata for broadcase WAV files, see the [FADGI guidelines](http://www.digitizationguidelines.gov/audio-visual/documents/Embed_Guideline_20120423.pdf)
+For guidlines on metadata for broadcast WAV files, see the [FADGI guidelines](http://www.digitizationguidelines.gov/audio-visual/documents/Embed_Guideline_20120423.pdf)
 
 ---
 
