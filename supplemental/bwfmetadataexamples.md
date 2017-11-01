@@ -9,10 +9,10 @@ After completing configuration you should end up with something along the lines 
 The following are explanations and examples for the kind of information to include in these three fields. For more detailed information about recommended metadata see the [FADGI guidelines](http://www.digitizationguidelines.gov/audio-visual/documents/Embed_Guideline_20120423.pdf)
 
 ### Originator:
-For this field use a unique identifier for your organization up to 32 characters.  This can be something like a [MARC organization code](https://www.loc.gov/marc/organizations/org-search.php). MARC codes can be requested [here](https://www.loc.gov/marc/organizations/form-eng.html)
-FADGI guidelines call for a two character country code followed by a comma to be placed in front of this identifier.
+For this field use a unique identifier for your organization up to 32 characters.  This can be something like a [MARC organization code](https://www.loc.gov/marc/organizations/org-search.php). MARC codes can be requested [here](https://www.loc.gov/marc/organizations/form-eng.html).
+FADGI guidelines call for a two character country code followed by a comma and space to be placed in front of this identifier.
 
-_Examples:_ `originator="US,WaSeUMC"`, `originator="US,WaU"`
+_Examples:_ `originator="US, WaSeUMC"`, `originator="US, WaU"`
 
 ### History:
 This field will fill the "Coding History" element of the BWF metadata.  Use it to record information about the creation of the WAV file.  The following is an example of a sample coding history with an annotated version.
