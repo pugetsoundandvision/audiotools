@@ -145,14 +145,14 @@ while [ "${*}" != "" ] ; do
     #create metadata and derivative files
     
     mediainfo --output=PBCore2 "${file_input}" > "${targetdirectory}/${mediaid}/logs/fileMeta/${mediaid}_pbcoreinstantiation.xml"
-    flac --best --keep-foreign-metadata --preserve-modtime --verify "${file_input}"
+    flac --best --keep-foreign-metadata --preserve-modtime --verify "${file_input}" 2>&1 | tee "${targetdirectory}/${mediaid}/logs/${mediaid}_flac.log"
     
     #mp3 options
     
     if [  -n "${copyright_location}" ] ; then
-        ffmpeg -i "${file_input}" -i "${copyright_location}" -filter_complex "[0:a:0]asplit=2[a][b];[a]dynaudnorm[aa];[b]afifo[bb];[1:a:0][bb]concat=n=2:v=0:a=1[c];[c]dynaudnorm=g=81[concatout]" -map "[aa]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${mp3_name}" -map "[concatout]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${appended_name}"
+        ffmpeg -i "${file_input}" -i "${copyright_location}" -filter_complex "[0:a:0]asplit=2[a][b];[a]dynaudnorm[aa];[b]afifo[bb];[1:a:0][bb]concat=n=2:v=0:a=1[c];[c]dynaudnorm=g=81[concatout]" -map "[aa]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${mp3_name}" -map "[concatout]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${appended_name}" 2>&1 | tee "${targetdirectory}/${mediaid}/logs/${mediaid}_ffmpeg.log"
     else
-        ffmpeg -i "${file_input}" -codec:a libmp3lame -write_id3v1 1 -id3v2_version 3 -dither_method triangular -af dynaudnorm=g=81 -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${mp3_name}"
+        ffmpeg -i "${file_input}" -codec:a libmp3lame -write_id3v1 1 -id3v2_version 3 -dither_method triangular -af dynaudnorm=g=81 -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${mp3_name}" 2>&1 | tee "${targetdirectory}/${mediaid}/logs/${mediaid}_ffmpeg.log"
     fi
 
 
