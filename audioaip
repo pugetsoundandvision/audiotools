@@ -119,14 +119,14 @@ while [ "${*}" != "" ] ; do
     #Photo Mode
     
     if [[ "${runtype}" = "photo" ]] ; then
-        Echo "How many pictures will you take?"
+        echo "How many pictures will you take?"
         read pic_num
         i=1
         while [ "$i" -le "$pic_num" ]; do
-            Echo "Press enter to activate camera, then press escape to take picture"
+            echo "Press enter to activate camera, then press escape to take picture"
             read null_response
-            ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
-            imagesnap - | ffmpeg -i - -compression_algo raw -pix_fmt rgb24 "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"$i".tiff && ffplay -window_title "Press Escape When Ready To Continue" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"${i}".tiff
+            ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default" -vf scale=900x900
+            ffmpeg -f avfoundation -i "default" -vf scale=900x900 "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"$i".jpg && ffplay -window_title "Press Escape When Ready To Continue" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"${i}".jpg
             echo "Enter q to quit, r to retake or enter continue"
             read followquery
 
@@ -135,7 +135,7 @@ while [ "${*}" != "" ] ; do
             fi
 
             if [[ "${followquery}" == "r" ]] ; then
-                rm "$(dirname "${file_input}")"/"${mediaid}"/objects/"${mediaid}"_0"${i}".tiff
+                rm "$(dirname "${file_input}")"/"${mediaid}"/objects/"${mediaid}"_0"${i}".jpg
             else
                 i=$(($i + 1))
             fi
