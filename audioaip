@@ -125,8 +125,8 @@ while [ "${*}" != "" ] ; do
         while [ "$i" -le "$pic_num" ]; do
             echo "Press enter to activate camera, then press escape to take picture"
             read null_response
-            ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default" -vf scale=900x900
-            ffmpeg -f avfoundation -i "default" -vf scale=900x900 "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"$i".jpg && ffplay -window_title "Press Escape When Ready To Continue" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"${i}".jpg
+            ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
+            ffmpeg -f avfoundation -i "default" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"$i".jpg && ffplay -window_title "Press Escape When Ready To Continue" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"${i}".jpg
             echo "Enter q to quit, r to retake or enter continue"
             read followquery
 
