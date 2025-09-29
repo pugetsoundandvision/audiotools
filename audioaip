@@ -86,117 +86,114 @@ while [ "${*}" != "" ] ; do
         _error_exit "Input is not a WAV file. Please enter valid input."
     fi
     
-    #Check if input is valid (mediaconch)
-    if [ -n "${mediaconchsource}" ] ; then
-        mediaconchresult=$(mediaconch --policy="${mediaconchsource}" "${file_input}")
-        mediaconchresult_trim=$(echo "${mediaconchresult}" | cut -d' ' -f1 | tr -d '\n')
-        if [ "${mediaconchresult_trim}" = "fail!" ] ; then
-            echo -e "\033[1;31mWarning: Input does not conform to the audioaip policies for the following reasons:\033[0m"
-            echo "${mediaconchresult}"
-            echo -e "\033[1;32mEnter Y to proceed.  Any other key to exit.\033[0m"
-            read exit_check
-            if ! [[ "${exit_check}" = [Yy] ]] ; then
-                _error_exit "Exiting"
-            fi 
-        fi
-    fi
-    
-    #create directory structure
-    
-    orig_base=$(basename "${file_input}")
-    deriv_name="${file_input%.*}.flac"
-    mp3_name="${file_input%.*}.mp3"
-    appended_name="${file_input%.*}_appended.mp3"
-    mediaid="${orig_base%.*}"
-    targetdirectory=$(dirname "${file_input}")
-    mkdir "${targetdirectory}/${mediaid}" || _error_exit "Directory already exists. Exiting..."
-    mkdir "${targetdirectory}/${mediaid}/metadata"
-    mkdir "${targetdirectory}/${mediaid}/logs"
-    mkdir "${targetdirectory}/${mediaid}/logs/fileMeta"
-    mkdir "${targetdirectory}/${mediaid}/objects"
-    mkdir "${targetdirectory}/${mediaid}/objects/access"
+      # --- Identify tape folder and prepare AIP ---
+    parent_folder=$(basename "$(dirname "${file_input}")")
+    tape_folder=$(dirname "${file_input}")
+    targetdirectory=$(dirname "$tape_folder")
+    mediaid="${parent_folder}"
+    package="${targetdirectory}/${mediaid}"
 
-    #Photo Mode
-    
+    # --- Create full AIP structure once per tape ---
+    mkdir -p "${package}/metadata"
+    mkdir -p "${package}/logs/fileMeta"
+    mkdir -p "${package}/objects/access"
+
+    # --- Photo Mode once per tape ---
     if [[ "${runtype}" = "photo" ]] ; then
-        echo "How many pictures will you take?"
+        echo "How many pictures will you take for ${mediaid}?"
         read pic_num
         i=1
         while [ "$i" -le "$pic_num" ]; do
             echo "Press enter to activate camera, then press escape to take picture"
             read null_response
             ffplay -window_title "Press Escape When Ready To Take Picture" -f avfoundation -i "default"
-            ffmpeg -f avfoundation -i "default" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"$i".jpg && ffplay -window_title "Press Escape When Ready To Continue" "${targetdirectory}"/"${mediaid}"/objects/"${mediaid}"_0"${i}".jpg
-            echo "Enter q to quit, r to retake or enter continue"
+            ffmpeg -f avfoundation -i "default" \
+                "${package}/objects/${mediaid}_0${i}.jpg" && \
+                ffplay -window_title "Press Escape When Ready To Continue" \
+                "${package}/objects/${mediaid}_0${i}.jpg"
+            echo "Enter q to quit, r to retake or Enter to continue"
             read followquery
-
-            if [[ "${followquery}" == "q" ]] ; then
-                exit
-            fi
-
+            if [[ "${followquery}" == "q" ]] ; then exit; fi
             if [[ "${followquery}" == "r" ]] ; then
-                rm "$(dirname "${file_input}")"/"${mediaid}"/objects/"${mediaid}"_0"${i}".jpg
+                rm "${package}/objects/${mediaid}_0${i}.jpg"
             else
-                i=$(($i + 1))
+                i=$((i + 1))
             fi
         done
     fi
 
-    #create metadata and derivative files
-    
-    mediainfo --output=PBCore2 "${file_input}" > "${targetdirectory}/${mediaid}/logs/fileMeta/${mediaid}_pbcoreinstantiation.xml"
-    flac --best --keep-foreign-metadata --preserve-modtime --verify "${file_input}" 2>&1 | tee "${targetdirectory}/${mediaid}/logs/${mediaid}_flac.log"
-    
-    #mp3 options
-    
-    if [  -n "${copyright_location}" ] ; then
-        ffmpeg -i "${file_input}" -i "${copyright_location}" -filter_complex "[0:a:0]asplit=2[a][b];[a]dynaudnorm[aa];[b]afifo[bb];[1:a:0][bb]concat=n=2:v=0:a=1[c];[c]dynaudnorm=g=81[concatout]" -map "[aa]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${mp3_name}" -map "[concatout]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${appended_name}" 2>&1 | tee "${targetdirectory}/${mediaid}/logs/${mediaid}_ffmpeg.log"
-    else
-        ffmpeg -i "${file_input}" -codec:a libmp3lame -write_id3v1 1 -id3v2_version 3 -dither_method triangular -af dynaudnorm=g=81 -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${mp3_name}" 2>&1 | tee "${targetdirectory}/${mediaid}/logs/${mediaid}_ffmpeg.log"
-    fi
+    # --- Process all WAVs in tape folder ---
+    for wavfile in "$tape_folder"/*.wav; do
+        echo "Processing ${wavfile} for AIP ${mediaid}"
 
-
-    #sync access mp3s if option selected
-    
-    if [[ "${derivative_choice}" = "Y" ]] ; then
-        echo -e "\033[1;32mSyncing access copy to $destination \033[0m"
-        rsync -Pa "${mp3_name}" "${derivative_destination}"
-        if [ -f "${appended_name}" ] ; then
-            rsync -Pa "${appended_name}" "${derivative_destination}"
+        # mediaconch validation
+        if [ -n "${mediaconchsource}" ] ; then
+            mediaconchresult=$(mediaconch --policy="${mediaconchsource}" "${wavfile}")
+            mediaconchresult_trim=$(echo "${mediaconchresult}" | cut -d' ' -f1 | tr -d '\n')
+            if [ "${mediaconchresult_trim}" = "fail!" ] ; then
+                echo -e "\033[1;31mWarning: ${wavfile} does not conform to audioaip policies\033[0m"
+                echo "${mediaconchresult}"
+                echo -e "\033[1;32mEnter Y to proceed. Any other key to exit.\033[0m"
+                read exit_check
+                if ! [[ "${exit_check}" = [Yy] ]] ; then
+                    _error_exit "Exiting"
+                fi
+            fi
         fi
-    fi
 
-    #create checksum
-    
-    md5deep -b "${file_input}" > "${targetdirectory}/${mediaid}/metadata/${mediaid}.md5"
+        base=$(basename "${wavfile}" .wav)
 
-    #move files
-    
-    rsync "${file_input}" "${targetdirectory}/${mediaid}/objects"
-    rsync --remove-source-files "${deriv_name}" "${targetdirectory}/${mediaid}/objects"
-    rsync --remove-source-files "${mp3_name}" "${targetdirectory}/${mediaid}/objects/access"
-    if [ -f "$appended_name" ] ; then
-        rsync --remove-source-files "${appended_name}" "${targetdirectory}/${mediaid}/objects/access"
-    fi
+        # --- Metadata and logs ---
+        mediainfo --output=PBCore2 "${wavfile}" > "${package}/logs/fileMeta/${base}_pbcoreinstantiation.xml"
+        flac --best --keep-foreign-metadata --preserve-modtime --verify "${wavfile}" 2>&1 | tee "${package}/logs/${base}_flac.log"
 
-    package="${targetdirectory}/${mediaid}"
+        # --- MP3 derivatives ---
+        if [ -n "${copyright_location}" ] ; then
+            ffmpeg -i "${wavfile}" -i "${copyright_location}" -filter_complex "[0:a:0]asplit=2[a][b];[a]dynaudnorm[aa];[b]afifo[bb];[1:a:0][bb]concat=n=2:v=0:a=1[c];[c]dynaudnorm=g=81[concatout]" \
+                -map "[aa]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${wavfile%.*}.mp3" \
+                -map "[concatout]" -codec:a libmp3lame -dither_method triangular -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${wavfile%.*}_appended.mp3" \
+                2>&1 | tee "${package}/logs/${base}_ffmpeg.log"
+        else
+            ffmpeg -i "${wavfile}" -codec:a libmp3lame -write_id3v1 1 -id3v2_version 3 -dither_method triangular -af dynaudnorm=g=81 \
+                -metadata Normalization="ffmpeg dynaudnorm=g=81" -qscale:a 2 "${wavfile%.*}.mp3" \
+                2>&1 | tee "${package}/logs/${base}_ffmpeg.log"
+        fi
 
-    #Run Bagit
-    
+        # --- Derivative sync (MP3s) ---
+        if [[ "${derivative_choice}" = "Y" ]] ; then
+            echo -e "\033[1;32mSyncing MP3 derivatives of ${wavfile} to ${derivative_destination}\033[0m"
+            rsync -Pa "${wavfile%.*}.mp3" "${derivative_destination}"
+            if [ -f "${wavfile%.*}_appended.mp3" ]; then
+                rsync -Pa "${wavfile%.*}_appended.mp3" "${derivative_destination}"
+            fi
+        fi
+
+        # --- Checksums ---
+        md5deep -b "${wavfile}" > "${package}/metadata/${base}.md5"
+
+        # --- Move WAVs and other files into AIP objects ---
+        rsync --remove-source-files "${wavfile}" "${package}/objects"
+        rsync --remove-source-files "${wavfile%.*}.flac" "${package}/objects"
+        rsync --remove-source-files "${wavfile%.*}.mp3" "${package}/objects/access"
+        if [ -f "${wavfile%.*}_appended.mp3" ]; then
+            rsync --remove-source-files "${wavfile%.*}_appended.mp3" "${package}/objects/access"
+        fi
+    done
+
+    # --- Remove original tape folder if empty ---
+    rmdir "$tape_folder" 2>/dev/null
+
+    # --- BagIt packaging once per tape ---
     bagit baginplace "${package}"
 
-    #sync AIP to destination
-    
+    # --- Sync full AIP if chosen ---
     if [[ "${sync_choice}" = "Y" ]] ; then
         for i in "${destination[@]}"  ; do
-            echo -e "\033[1;32mSyncing Files to ${i} \033[0m"
+            echo -e "\033[1;32mSyncing AIP ${mediaid} to ${i}\033[0m"
             rsync -Pa "${package}" "${i}"
-            # check if destination is local. If local verify with bagit. 
-            remote_test=$(echo "${destination}" | grep "@")
-            if [ -n "${remote_test}" ] ; then
-                echo -e "\033[1;32mAs Destination is not local audioaip is skipping bagit verification\033[0m"
-            else
-                echo -e "\033[1;32mVerifying checksums of package \033[0m"
+            remote_test=$(echo "${i}" | grep "@")
+            if [ -z "${remote_test}" ] ; then
+                echo -e "\033[1;32mVerifying checksums of package\033[0m"
                 bagit verifypayloadmanifests --excludehiddenfiles "${i}"/"${mediaid}"
             fi
         done
