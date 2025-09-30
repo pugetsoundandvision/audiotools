@@ -184,7 +184,7 @@ while [ "${*}" != "" ] ; do
     rmdir "$tape_folder" 2>/dev/null
 
     # --- BagIt packaging once per tape ---
-    bagit baginplace "${package}"
+    bagit.py --md5 "$package"
 
     # --- Sync full AIP if chosen ---
     if [[ "${sync_choice}" = "Y" ]] ; then
